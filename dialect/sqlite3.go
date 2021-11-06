@@ -6,16 +6,15 @@ import (
 	"time"
 )
 
-type sqlite3 struct {
-}
+type sqlite3 struct{}
 
 var _ Dialect = (*sqlite3)(nil)
 
 func init() {
 	RegisterDialect("sqlite3", &sqlite3{})
-
 }
 
+// Get Data Type for sqlite3 Dialect
 func (s *sqlite3) DataTypeOf(typ reflect.Value) string {
 	switch typ.Kind() {
 	case reflect.Bool:
@@ -39,7 +38,8 @@ func (s *sqlite3) DataTypeOf(typ reflect.Value) string {
 	panic(fmt.Sprintf("invalid sql type %s (%s)", typ.Type().Name(), typ.Kind()))
 }
 
+// TableExistSQL returns SQL that judge whether the table exists in database
 func (s *sqlite3) TableExistSQL(tableName string) (string, []interface{}) {
 	args := []interface{}{tableName}
-	return "select name from sqlite_master where type = 'table' and name = ?", args
+	return "SELECT name FROM sqlite_master WHERE type='table' and name = ?", args
 }
